@@ -13,9 +13,13 @@ class ServerData():
     def __init__(self):
         self.data = None
         self.port = 8004
+        self.running = False
     
     def putData(self,dataString):
         self.data = dataString
+    
+    def setRunning(self,TrueOrFalse):
+        self.running = TrueOrFalse
 
 data = ServerData()
 
@@ -26,6 +30,7 @@ class RLTOBLENDER_OT_Start_Socket_Connection_Op(Operator):
 
     def __init__(self):
         self.running = False
+        print("INIT IS BEING RAN")
     
 
     # @classmethod
@@ -34,11 +39,24 @@ class RLTOBLENDER_OT_Start_Socket_Connection_Op(Operator):
     #     pass        
 
     def execute(self, context):
-        # Starts websocket
-        self.handler = HttpHandler
-        self.thread = threading.Thread(target=self.HTTPThread)
-        self.thread.start()
-        return {'FINISHED'}
+        if not data.running:
+            # Starts websocket
+            data.setRunning(True)
+            try:
+                # print(self.thread.is_alive)
+                # print(self.thread.isAlive)
+                print(self.thread.name)
+            except:
+                print("Thread doesn't exist")
+                pass
+            self.handler = HttpHandler
+            self.thread = threading.Thread(target=self.HTTPThread)
+            self.thread.start()
+            return {'FINISHED'}
+        else:
+            data.setRunning(False)
+            # self.thread._stop()
+            return {'FINISHED'}
 
     
     def HTTPThread(self):
@@ -46,7 +64,9 @@ class RLTOBLENDER_OT_Start_Socket_Connection_Op(Operator):
         print(threading.current_thread().name, "Running")
         print(threading.current_thread().ident)
         print("Server started at localhost:" + str(data.port))
-        server.serve_forever()
+        while data.running:
+            server.handle_request()
+        # server.serve_forever()
         # httpd.shutdown
 
 

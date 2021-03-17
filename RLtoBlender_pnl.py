@@ -15,10 +15,10 @@ class RLTOBLENDER_PT_Panel(Panel):
         # 2 Colums with buttons
         row = layout.row()
         col = row.column()
-        col.operator("generic.start_socket_connection", text="Start RL Connection")
+        col.operator("generic.start_socket_connection", text="Toggle RL Connection")
 
         # col = row.column()
-        # col.operator("generic.stop_socket_connection", text="Stop RL Connection")
+        # col.operator("generic.stop_socket_connection", text="Toggle RL Connection")
 
         row = layout.row()
         col = row.column()
